@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block metadescription %}
+    {% if category %}
+        {{ category.desc|truncatewords:155 }}
+    {% else %}
+        Welcome to Candela store where you can buy different items.
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    {% if category %}
+        {{ category.name }} - Candela store
+    {% else %}
+        See our new collections - Candela store
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if category %}
+            <div class="row my_row_class">
+                <div class="col-md-12 text-center">
+                    <p><a href="{% url 'shop_app:allProductsCat' %}">Our Products Collections</a></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <a href="{% url 'shop_app:allProductsCat' c_slug=category.slug %}">{{ category.name }}</a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <img class="my_image" src="{{ category.img.url }}" alt="{{ category.name }}">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <h1 class="my_title">{{ category.name }}</h1>
+                    <h5 class="text-center" style="font-style: italic;"><b>{{ category.desc }}</b></h5>
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <img class="my_image my_image_padding" src="{% static 'img/banner.jpg' %}" width="1000px;" height="500px;" alt="our products">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <h1 class="my_title">Our products collection</h1>
+                    <p class="text-justify">
+                          Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                when an unknown printer took a galley of type and scrambled it to make a type
+                specimen book. It has survived not only five centuries, but also the leap into
+                electronic typesetting, remaining essentially unchanged.
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+        <div class="container">
+        <div class="row mx-auto">
+            {% for product in products.object_list %}
+                <div class="my_bottom_margin col-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="card text-center" style="min-width: 18rem;">
+                        <a href="{{ product.get_url }}">
+                            {% if product.img %}
+                                <img class="card-img-top my_image" src="{{ product.img.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <p>No Image Available</p>
+                            {% endif %}
+                        </a>
+                        <div class="card-body">
+                            <h4>{{ product.name }}</h4>
+                            <p>{{ product.price }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mx-auto">
+            {% if products.paginator.num_pages > 1 %}
+
+            <hr>
+            <div class="text-center">
+                {% for pg in products.paginator.page_range %}
+                <a href="?page={{pg}}" class="btn btn-light btn-sm {% if products.number == pg %} active {% endif %}">{{ pg }}</a>
+
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <br>
+    </div>
+{% endblock %}
